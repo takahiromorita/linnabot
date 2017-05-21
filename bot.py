@@ -7,6 +7,15 @@ import requests
 import doco.client
 import falcon
 
+import psycopg2
+conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot")
+cur = conn.cursor()
+cur.execute("INSERT INTO contextdb (context, date) VALUES (aaa, aaa)")
+cur.fetchone()
+conn.commit()
+cur.close()
+conn.close()
+
 # logger
 logger = getLogger(__name__)
 handler = StreamHandler()
