@@ -23,7 +23,7 @@ conn = psycopg2.connect(
     port=url.port
 )
 cur = conn.cursor()
-cur.execute("INSERT INTO contextTb (context, date) VALUES ('aaa', '2017-05-15 00:00:00');")
+cur.execute("INSERT INTO contexttb (context, date) VALUES ('aaa', '2017-05-15 00:00:00');")
 #cur.fetchone()
 conn.commit()
 cur.close()
