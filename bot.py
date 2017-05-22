@@ -93,7 +93,7 @@ class CallbackResource(object):
                     port=url.port
                 )
                 cur = conn.cursor()
-                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, '2017-05-15 00:00:00')" sys_context)
+                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, '2017-05-15 00:00:00')",sys_context)
                 conn.commit()
                 cur.close()
                 conn.close()
