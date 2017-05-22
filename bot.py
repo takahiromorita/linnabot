@@ -11,7 +11,8 @@ import psycopg2
 #import urlparse
 import urllib
 #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
-urlparse.uses_netloc.append("postgres")
+#urlparse.uses_netloc.append("postgres")
+urllib.parse.uses_netloc.append("postgres")
 #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
 url = urllib.parse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
 conn = psycopg2.connect(
