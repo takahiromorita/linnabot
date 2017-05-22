@@ -10,24 +10,7 @@ import falcon
 import psycopg2
 #import urlparse
 import urllib
-#conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
-#urlparse.uses_netloc.append("postgres")
-urllib.parse.uses_netloc.append("postgres")
-#url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
-url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
-cur = conn.cursor()
-cur.execute("INSERT INTO contexttb (context, date) VALUES ('bbb', '2017-05-15 00:00:00');")
-#cur.fetchone()
-conn.commit()
-cur.close()
-conn.close()
+
 
 # logger
 logger = getLogger(__name__)
@@ -79,6 +62,7 @@ class CallbackResource(object):
 
                 logger.debug('docomo_res: {}'.format(docomo_res))
                 sys_utt = docomo_res['utt']
+                sys_context = docomo_res['context']
 
                 send_content = {
                     'replyToken': event['replyToken'],
@@ -95,7 +79,25 @@ class CallbackResource(object):
 
                 res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                 logger.debug('res: {} {}'.format(res.status_code, res.reason))
-
+                
+                #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
+                #urlparse.uses_netloc.append("postgres")
+                urllib.parse.uses_netloc.append("postgres")
+                #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
+                url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+                conn = psycopg2.connect(
+                    database=url.path[1:],
+                    user=url.username,
+                    password=url.password,
+                    host=url.hostname,
+                    port=url.port
+                )
+                cur = conn.cursor()
+                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, '2017-05-15 00:00:00')" sys_context)
+                conn.commit()
+                cur.close()
+                conn.close()
+                
                 resp.body = json.dumps('OK')
 
 
