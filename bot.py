@@ -10,7 +10,7 @@ import falcon
 import psycopg2
 conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
 cur = conn.cursor()
-cur.execute("INSERT INTO contextTb (context, date) VALUES ('aaa', '2017-05-10 00:00:00')")
+cur.execute("INSERT INTO heroku-chatbot20170521-d60eumuvp125t8-public.contextTb (context, date) VALUES ('aaa', '2017-05-10 00:00:00')")
 #cur.fetchone()
 conn.commit()
 cur.close()
