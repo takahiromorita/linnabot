@@ -10,7 +10,7 @@ import falcon
 import psycopg2
 #import urlparse
 import urllib
-
+import time
 
 # logger
 logger = getLogger(__name__)
@@ -80,6 +80,7 @@ class CallbackResource(object):
                 res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                 logger.debug('res: {} {}'.format(res.status_code, res.reason))
                 
+                time = time.strftime("%Y/%m/%d %H:%M:%S")
                 #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
                 #urlparse.uses_netloc.append("postgres")
                 urllib.parse.uses_netloc.append("postgres")
@@ -93,7 +94,7 @@ class CallbackResource(object):
                     port=url.port
                 )
                 cur = conn.cursor()
-                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, '2017-05-15 00:00:00')",[sys_context])
+                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,time])
                 conn.commit()
                 cur.close()
                 conn.close()
