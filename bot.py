@@ -26,6 +26,25 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsd
 
 
 class CallbackResource(object):
+    # time
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    
+    # postgers
+    #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
+    #urlparse.uses_netloc.append("postgres")
+    urllib.parse.uses_netloc.append("postgres")
+    #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
+    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    
     # line
     header = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -33,6 +52,9 @@ class CallbackResource(object):
     }
 
     # docomo
+    cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
+    logger.debug('db_test: {}'.format(cur.fetchone()))
+    
     user = {'t': 20}  # 20:kansai character
     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
 
@@ -81,27 +103,13 @@ class CallbackResource(object):
                 res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                 logger.debug('res: {} {}'.format(res.status_code, res.reason))
                 
-                ts = time.time()
-                timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-                #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
-                #urlparse.uses_netloc.append("postgres")
-                urllib.parse.uses_netloc.append("postgres")
-                #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
-                url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
-                conn = psycopg2.connect(
-                    database=url.path[1:],
-                    user=url.username,
-                    password=url.password,
-                    host=url.hostname,
-                    port=url.port
-                )
-                cur = conn.cursor()
                 cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
                 conn.commit()
-                cur.close()
-                conn.close()
                 
                 resp.body = json.dumps('OK')
+
+    cur.close()
+    conn.close()
 
 
 api = falcon.API()
