@@ -33,8 +33,8 @@ class CallbackResource(object):
     }
 
     # docomo
-    cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
-    logger.debug('db_test: {}'.format(cur.fetchone()[1]))
+    #cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
+    #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
     
     user = {'t':20}  # 20:kansai character
     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
