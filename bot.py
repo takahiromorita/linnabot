@@ -53,9 +53,9 @@ class CallbackResource(object):
 
     # docomo
     cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
-    logger.debug('db_test: {}'.format(cur.fetchone()[0]))
+    logger.debug('db_test: {}'.format(cur.fetchone()[1]))
     
-    user = {'t':20, 'context':cur.fetchone()[0]}  # 20:kansai character
+    user = {'t':20, 'context':cur.fetchone()[1]}  # 20:kansai character
     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
 
     def on_post(self, req, resp):
