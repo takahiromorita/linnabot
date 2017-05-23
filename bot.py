@@ -57,6 +57,7 @@ class CallbackResource(object):
     
     user = {'t':20, 'context':'VJvKefZW1IoqufRPLxas9A'}  # 20:kansai character
     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
+    cur.close()
 
     def on_post(self, req, resp):
 
@@ -103,6 +104,7 @@ class CallbackResource(object):
                 res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                 logger.debug('res: {} {}'.format(res.status_code, res.reason))
                 
+                cur = conn.cursor()
                 cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
                 conn.commit()
                 
