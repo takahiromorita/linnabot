@@ -26,25 +26,6 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsd
 
 
 class CallbackResource(object):
-    # time
-    ts = time.time()
-    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    
-    # postgers
-    #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
-    #urlparse.uses_netloc.append("postgres")
-    urllib.parse.uses_netloc.append("postgres")
-    #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
-    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
-    conn = psycopg2.connect(
-        database=url.path[1:],
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
-    )
-    cur = conn.cursor()
-    
     # line
     header = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -55,9 +36,8 @@ class CallbackResource(object):
     cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
     logger.debug('db_test: {}'.format(cur.fetchone()[1]))
     
-    user = {'t':20, 'context':'VJvKefZW1IoqufRPLxas9A'}  # 20:kansai character
+    user = {'t':20}  # 20:kansai character
     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
-    cur.close()
 
     def on_post(self, req, resp):
 
@@ -75,9 +55,37 @@ class CallbackResource(object):
 
             if event['type'] == 'message':
                 try:
+                    # time
+                    ts = time.time()
+                    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                    
+                    # postgers
+                    #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
+                    #urlparse.uses_netloc.append("postgres")
+                    urllib.parse.uses_netloc.append("postgres")
+                    #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
+                    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+                    conn = psycopg2.connect(
+                        database=url.path[1:],
+                        user=url.username,
+                        password=url.password,
+                        host=url.hostname,
+                        port=url.port
+                    )
+                    cur = conn.cursor()
+                    cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
+                    #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
+                    
                     user_utt = event['message']['text']
                     docomo_res = self.docomo_client.send(
-                        utt=user_utt, apiname='Dialogue')
+                        utt=user_utt, apiname='Dialogue', context='VJvKefZW1IoqufRPLxas9A')
+                    sys_context = docomo_res['context']
+                    
+                    cur = conn.cursor()
+                    cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
+                    conn.commit()
+                    cur.close()
+                    conn.close()
 
                 except Exception:
                     raise falcon.HTTPError(falcon.HTTP_503,
@@ -86,7 +94,6 @@ class CallbackResource(object):
 
                 logger.debug('docomo_res: {}'.format(docomo_res))
                 sys_utt = docomo_res['utt']
-                sys_context = docomo_res['context']
 
                 send_content = {
                     'replyToken': event['replyToken'],
@@ -104,14 +111,7 @@ class CallbackResource(object):
                 res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                 logger.debug('res: {} {}'.format(res.status_code, res.reason))
                 
-                cur = conn.cursor()
-                cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
-                conn.commit()
-                
                 resp.body = json.dumps('OK')
-
-    cur.close()
-    conn.close()
 
 
 api = falcon.API()
