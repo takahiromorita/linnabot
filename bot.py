@@ -72,8 +72,8 @@ class CallbackResource(object):
                     cur = conn.cursor()
                     cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
                     #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
-                    delta = timestamp - cur.fetchone()[2]
-                    logger.debug('delta: {}'.format(delta))
+                    #delta = timestamp - cur.fetchone()[2]
+                    #logger.debug('delta: {}'.format(delta))
                     
                     user_utt = event['message']['text']
                     docomo_res = self.docomo_client.send(
