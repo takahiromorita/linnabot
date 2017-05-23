@@ -78,7 +78,7 @@ class CallbackResource(object):
                     
                     user_utt = event['message']['text']
                     docomo_res = self.docomo_client.send(
-                        utt=user_utt, apiname='Dialogue', context='VJvKefZW1IoqufRPLxas9A')
+                        utt=user_utt, apiname='Dialogue', context='{}'.format(cur.fetchone()[1]))
                     sys_context = docomo_res['context']
                     
                     cur = conn.cursor()
