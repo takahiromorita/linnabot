@@ -111,7 +111,7 @@ class CallbackResource(object):
                             cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
                             logger.debug('dialogue_test: {}'.format(cur.fetchone()[2]))
                             #params={'grant_type':'refresh_token','refresh_token':'oYDeGLZu71N5HbGkFGC8LdXqj7Z6txMXYJ8EyThgK9NZ'}
-                            payload = "grant_type=refresh_token&refresh_token=oYDeGLZu71N5HbGkFGC8LdXqj7Z6txMXYJ8EyThgK9NZ"
+                            payload = 'grant_type=refresh_token&refresh_token={}'.format(cur.fetchone()[2])
                             logger.debug('dialogue_t')
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -126,6 +126,7 @@ class CallbackResource(object):
                             logger.debug('dialogue_testttt: {}'.format(accesstoken))
                             cur = conn.cursor()
                             cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
+                            conn.commit()
                             header = {
                                 'Content-Type': 'application/json; charset=UTF-8',
                                 'Authorization': 'Bearer {}'.format(accesstoken)
