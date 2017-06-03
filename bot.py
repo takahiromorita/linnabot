@@ -69,13 +69,9 @@ class CallbackResource(object):
                         port=url.port
                     )
                     
-                    if event['message']['text'].find('?') > -1:
-                        #logger.debug('test_content0: {}'.format(event['message']['text'].decode('utf-8').encode('utf-8')))
-                        #logger.debug('test_content: {}'.format(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')))
-                        #s = requests.session()
+                    if event['message']['text'].find('教えて') > -1:
                         params={'q':event['message']['text'], 'APIKEY':DOCOMO_API_KEY}
                         r = requests.get(DOCOMO_QA_ENDPOINT, params=params)
-                        #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
                         docomo_res = json.loads(r.text)
                         sys_utt = docomo_res['answers'][0]['answerText']
                         logger.debug('test_aaaaa: {}'.format(sys_utt))
@@ -85,7 +81,6 @@ class CallbackResource(object):
                         cur = conn.cursor()
                         cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
                         conn.commit()
-                        logger.debug('delta')
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
