@@ -123,6 +123,7 @@ class CallbackResource(object):
                             docomo_res = json.loads(r.text)
                             accesstoken = docomo_res['access_token']
                             refreshtoken = docomo_res['refresh_token']
+                            logger.debug('dialogue_testttt: {}'.format(accesstoken))
                             cur = conn.cursor()
                             cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
                             header = {
