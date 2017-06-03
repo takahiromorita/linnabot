@@ -23,7 +23,7 @@ logger.addHandler(handler)
 
 REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
 DOCOMO_DL_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/dialogue/v2/dialogue'
-DOCOMO_REFRESH_TOKEN = 'https://api.smt.docomo.ne.jp/cgi12/token'
+DOCOMO_REFRESH_TOKEN = 'https://api.smt.docomo.ne.jp/cgi12/token?grant_type=refresh_token&refresh_token=oYDeGLZu71N5HbGkFGC8LdXqj7Z6txMXYJ8EyThgK9NZ'
 DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask'
 DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139')
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsdQtIQR6+UTVPKZfZF/fF4Yna1wpBnjyyUbYCgcY9sqgQf27nNDF9RVlsllCChQ7ZGwTcKz2EN4Tkyt0KAkBHJ658xzmeFg4nreiPwtFrFIL19g4+ZDskA570n9gIVOH6fenXTnyFKPdvMy9gdB04t89/1O/w1cDnyilFU=')
@@ -116,7 +116,8 @@ class CallbackResource(object):
                                 'Content-Type': 'application/x-www-form-urlencoded',
                                 'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
-                            r2 = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
+                            #r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
+                            r2 = requests.post(DOCOMO_REFRESH_TOKEN, headers=header)
                             logger.debug('dialogue_test: {}'.format(r2.status_code))
                             accesstoken = json.loads(r.text)['access_token']
                             refreshtoken = json.loads(r.text)['refresh_token']
