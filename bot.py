@@ -115,6 +115,7 @@ class CallbackResource(object):
                                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                                 'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
+                            logger.debug('dialogue_t')
                             r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
                             logger.debug('dialogue_test: {}'.format(r.status_code))
                             accesstoken = json.loads(r.text)['access_token']
