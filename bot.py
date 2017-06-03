@@ -104,7 +104,8 @@ class CallbackResource(object):
                             'context': '{}'.format(sys_context)
                         }
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
-                        logger.debug('dialogue_test: {}'.format(r.text))
+                        logger.debug('dialogue_test: {}'.format(r.status_code))
+                        
                         docomo_res = json.loads(r.text)
                         #docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
                         sys_context = docomo_res['context']
