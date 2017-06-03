@@ -33,8 +33,8 @@ class CallbackResource(object):
     }
 
     # docomo
-    #user = {'t':20}  # 20:kansai character
-    #docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
+    user = {'t':20}  # 20:kansai character
+    docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user)
 
     def on_post(self, req, resp):
 
@@ -76,11 +76,9 @@ class CallbackResource(object):
                     #logger.debug('delta: {}'.format(delta))
                     
                     user_utt = event['message']['text']
-                    user = {'t':30}  # 20:kansai character
-                    docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user, context='{}'.format(cur.fetchone()[1]))
                     #docomo_res = self.docomo_client.send(
                     #    utt=user_utt, apiname='Dialogue', context='{}'.format(cur.fetchone()[1]))
-                    docomo_res = docomo_client.send(utt=user_utt, apiname='Dialogue', mode='srtr')
+                    docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='srtr', context='{}'.format(cur.fetchone()[1]))
                     sys_context = docomo_res['context']
                     
                     cur = conn.cursor()
