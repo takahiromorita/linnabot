@@ -90,14 +90,13 @@ class CallbackResource(object):
                         #delta = timestamp - cur.fetchone()[2]
                         #logger.debug('delta: {}'.format(delta))
                         #user_utt = event['message']['text']
-                        #cur = conn.cursor()
-                        #cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
-                        #docomo_access_token = cur.fetchone()[1]
-                        logger.debug('dialogue_test')
+                        cur = conn.cursor()
+                        cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
+                        docomo_access_token = cur.fetchone()[1]
                         params={'APIKEY':DOCOMO_API_KEY}
                         header = {
                             'Content-Type': 'application/json; charset=UTF-8',
-                            'Authorization': 'Bearer 2963OsXLLcftLWL1rGNiBNrtZc6L2sRwfh2CEHDLLM8R'
+                            'Authorization': 'Bearer {}'.format(docomo_access_token)
                         }
                         content = {
                             'utt': event['message']['text'],
