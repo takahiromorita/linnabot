@@ -98,7 +98,7 @@ class CallbackResource(object):
                         params={'APIKEY':DOCOMO_API_KEY}
                         header = {
                             'Content-Type': 'application/json; charset=UTF-8',
-                            'Authorization': 'Bearer {}'.format(docomo_access_token)
+                            'Authorization': 'Basic {}'.format(docomo_access_token)
                         }
                         content = {
                             'utt': event['message']['text'],
@@ -109,6 +109,7 @@ class CallbackResource(object):
                         if r.status_code == 403:
                             cur = conn.cursor()
                             cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
+                            logger.debug('dialogue_test: {}'.format(cur.fetchone()[2]))
                             params={'grant_type': 'refresh_token', 'refresh_token': '{}'.format(cur.fetchone()[2])}
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -122,7 +123,7 @@ class CallbackResource(object):
                             cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
                             header = {
                                 'Content-Type': 'application/json; charset=UTF-8',
-                                'Authorization': 'Bearer {}'.format(accesstoken)
+                                'Authorization': 'Basic {}'.format(accesstoken)
                             }
                             content = {
                                 'utt': event['message']['text'],
