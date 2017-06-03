@@ -70,6 +70,7 @@ class CallbackResource(object):
                     )
                     
                     if event['message']['text'].find('?') > -1:
+                        logger.debug('test_content0: {}'.format(u'教えてください?'.encode('utf-8')))
                         logger.debug('test_content: {}'.format(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')))
                         docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')+'&APIKEY='+DOCOMO_API_KEY)
                     else:
