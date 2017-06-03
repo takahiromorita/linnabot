@@ -78,7 +78,7 @@ class CallbackResource(object):
                         #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
                         docomo_res = json.loads(r.text)
                         sys_utt = docomo_res['answers'][0]['answerText']
-                        logger.debug('test_aaaaa: {}'.format(docomo_res))
+                        logger.debug('test_aaaaa: {}'.format(sys_utt))
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
