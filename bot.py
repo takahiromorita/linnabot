@@ -79,6 +79,9 @@ class CallbackResource(object):
                         docomo_res = json.loads(r.text)
                         sys_utt = docomo_res['answers'][0]['answerText']
                         logger.debug('test_aaaaa: {}'.format(sys_utt))
+                        cur = conn.cursor()
+                        cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
+                        conn.commit()
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
