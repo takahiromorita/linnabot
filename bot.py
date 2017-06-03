@@ -93,6 +93,7 @@ class CallbackResource(object):
                         #cur = conn.cursor()
                         #cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
                         #docomo_access_token = cur.fetchone()[1]
+                        logger.debug('dialogue_test')
                         params={'APIKEY':DOCOMO_API_KEY}
                         header = {
                             'Content-Type': 'application/json; charset=UTF-8',
@@ -102,7 +103,6 @@ class CallbackResource(object):
                             'utt': event['message']['text'],
                             'context': '{}'.format(cur.fetchone()[1])
                         }
-                        logger.debug('dialogue_test')
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=content, headers=header)
                         logger.debug('dialogue_test: {}'.format(r))
                         docomo_res = json.loads(r.text)
