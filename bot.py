@@ -112,7 +112,7 @@ class CallbackResource(object):
                             params={'grant_type': 'refresh_token', 'refresh_token': '{}'.format(cur.fetchone()[2])}
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                                'Authorization': 'Bearer aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
+                                'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
                             r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
                             logger.debug('dialogue_test: {}'.format(r.status_code))
