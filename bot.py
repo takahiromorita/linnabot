@@ -74,9 +74,10 @@ class CallbackResource(object):
                         #logger.debug('test_content: {}'.format(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')))
                         s = requests.session()
                         params={'q':'are', 'APIKEY':'507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139'}
-                        docomo_res = s.get('https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask', params=params)
+                        r = s.get('https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask', params=params)
                         #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
-                        logger.debug('test_aaaaa: {}'.format(docomo_res))
+                        res_json = json.loads(r.text)
+                        logger.debug('test_aaaaa: {}'.format(res_json))
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
