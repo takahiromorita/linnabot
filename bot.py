@@ -97,11 +97,11 @@ class CallbackResource(object):
                         params={'APIKEY':DOCOMO_API_KEY}
                         header = {
                             'Content-Type': 'application/json; charset=UTF-8',
-                            'Authorization': 'Bearer {}'.format('2963OsXLLcftLWL1rGNiBNrtZc6L2sRwfh2CEHDLLM8R')
+                            'Authorization': 'Bearer 2963OsXLLcftLWL1rGNiBNrtZc6L2sRwfh2CEHDLLM8R'
                         }
                         content = {
                             'utt': event['message']['text'],
-                            'context': '{}'.format(cur.fetchone()[1])
+                            'context': '{}'.format(sys_context)
                         }
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=content, headers=header)
                         logger.debug('dialogue_test: {}'.format(r))
