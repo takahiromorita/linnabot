@@ -22,6 +22,7 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 
 REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
+DOCOMO_DL_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/dialogue/v2/dialogue'
 DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask'
 DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139')
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsdQtIQR6+UTVPKZfZF/fF4Yna1wpBnjyyUbYCgcY9sqgQf27nNDF9RVlsllCChQ7ZGwTcKz2EN4Tkyt0KAkBHJ658xzmeFg4nreiPwtFrFIL19g4+ZDskA570n9gIVOH6fenXTnyFKPdvMy9gdB04t89/1O/w1cDnyilFU=')
@@ -84,11 +85,26 @@ class CallbackResource(object):
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
+                        sys_context = cur.fetchone()[1]
                         #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
                         #delta = timestamp - cur.fetchone()[2]
                         #logger.debug('delta: {}'.format(delta))
-                        user_utt = event['message']['text']
-                        docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
+                        #user_utt = event['message']['text']
+                        #cur = conn.cursor()
+                        #cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
+                        #docomo_access_token = cur.fetchone()[1]
+                        params={'APIKEY':DOCOMO_API_KEY}
+                        header = {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Authorization': 'Bearer {}'.format('2963OsXLLcftLWL1rGNiBNrtZc6L2sRwfh2CEHDLLM8R')
+                        }
+                        content = {
+                            'utt': event['message']['text'],
+                            'context': '{}'.format(cur.fetchone()[1])
+                        }
+                        r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=content, headers=header)
+                        docomo_res = json.loads(r.text)
+                        #docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
                         sys_context = docomo_res['context']
                         sys_utt = docomo_res['utt']
                         cur = conn.cursor()
