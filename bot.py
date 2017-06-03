@@ -107,7 +107,9 @@ class CallbackResource(object):
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
                         logger.debug('dialogue_test: {}'.format(r.status_code))
                         if r.status_code == 403:
-                            params={'grant_type': 'refresh_token', 'refresh_token': cur.fetchone()[2]}
+                            cur = conn.cursor()
+                            cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
+                            params={'grant_type': 'refresh_token', 'refresh_token': '{}'.format(cur.fetchone()[2])}
                             logger.debug('dialogue_test: {}'.format(r.status_code))
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
