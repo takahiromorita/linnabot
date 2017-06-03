@@ -82,6 +82,7 @@ class CallbackResource(object):
                         cur = conn.cursor()
                         cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
                         conn.commit()
+                        logger.debug('delta')
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
