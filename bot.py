@@ -72,7 +72,7 @@ class CallbackResource(object):
                     if event['message']['text'].find('?') > -1:
                         #logger.debug('test_content0: {}'.format(event['message']['text'].decode('utf-8').encode('utf-8')))
                         #logger.debug('test_content: {}'.format(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')))
-                        params={'q':'次期アメリカ大統領は？', 'APIKEY':DOCOMO_API_KEY}
+                        params={'q':'are', 'APIKEY':DOCOMO_API_KEY}
                         docomo_res = requests.get(DOCOMO_QA_ENDPOINT, params=params)
                         #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
                     else:
