@@ -76,7 +76,7 @@ class CallbackResource(object):
                         params={'q':'are', 'APIKEY':'507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139'}
                         docomo_res = s.get('https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask', params=params)
                         #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
-                        logger.debug('test_aaaaa: {}'.format('aaaaaaaaaa')
+                        logger.debug('test_aaaaa: {}'.format('aaaaaaaaaa'))
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
