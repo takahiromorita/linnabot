@@ -98,7 +98,7 @@ class CallbackResource(object):
                         params={'APIKEY':DOCOMO_API_KEY}
                         header = {
                             'Content-Type': 'application/json; charset=UTF-8',
-                            'Authorization': 'Basic tvwbvgAmfYXjvh4obU9vLYTbIRavVKoJZD6DFUSRyc5a'#.format(docomo_access_token)
+                            'Authorization': 'Bearer tvwbvgAmfYXjvh4obU9vLYTbIRavVKoJZD6DFUSRyc5a'#.format(docomo_access_token)
                         }
                         content = {
                             'utt': event['message']['text'],
