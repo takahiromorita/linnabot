@@ -58,10 +58,7 @@ class CallbackResource(object):
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     
                     # postgers
-                    #conn = psycopg2.connect("dbname=d60eumuvp125t8 host=ec2-174-129-227-116.compute-1.amazonaws.com user=rrzanzdfkiuvot password=888af4acd6219fe826b95173080870c57685f3fa912285b82dbd56d563d34fdb")
-                    #urlparse.uses_netloc.append("postgres")
                     urllib.parse.uses_netloc.append("postgres")
-                    #url = urlparse.urlparse(os.environ["ec2-174-129-227-116.compute-1.amazonaws.com"])
                     url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
                     conn = psycopg2.connect(
                         database=url.path[1:],
@@ -70,21 +67,23 @@ class CallbackResource(object):
                         host=url.hostname,
                         port=url.port
                     )
-                    cur = conn.cursor()
-                    cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
-                    #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
-                    #delta = timestamp - cur.fetchone()[2]
-                    #logger.debug('delta: {}'.format(delta))
                     
-                    user_utt = event['message']['text']
-                    #docomo_res = self.docomo_client.send(
-                    #    utt=user_utt, apiname='Dialogue', context='{}'.format(cur.fetchone()[1]))
-                    docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
-                    sys_context = docomo_res['context']
+                    if event['message']['text'].find('?') > -1:
+                        docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')+'APIKEY='+DOCOMO_API_KEY)
+                    else:
+                        cur = conn.cursor()
+                        cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
+                        #logger.debug('db_test: {}'.format(cur.fetchone()[1]))
+                        #delta = timestamp - cur.fetchone()[2]
+                        #logger.debug('delta: {}'.format(delta))
+                        user_utt = event['message']['text']
+                        docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
+                        sys_context = docomo_res['context']
+                        sys_utt = docomo_res['utt']
+                        cur = conn.cursor()
+                        cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
+                        conn.commit()
                     
-                    cur = conn.cursor()
-                    cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
-                    conn.commit()
                     cur.close()
                     conn.close()
 
@@ -94,7 +93,7 @@ class CallbackResource(object):
                                            'Could not invoke docomo api.')
 
                 logger.debug('docomo_res: {}'.format(docomo_res))
-                sys_utt = docomo_res['utt']
+                #sys_utt = docomo_res['utt']
 
                 send_content = {
                     'replyToken': event['replyToken'],
