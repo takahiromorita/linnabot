@@ -80,7 +80,7 @@ class CallbackResource(object):
                     docomo_client = doco.client.Client(apikey=DOCOMO_API_KEY, user=user, context='{}'.format(cur.fetchone()[1]))
                     #docomo_res = self.docomo_client.send(
                     #    utt=user_utt, apiname='Dialogue', context='{}'.format(cur.fetchone()[1]))
-                    docomo_res = docomo_client.send(utt=user_utt, mode='srtr')
+                    docomo_res = docomo_client.send(utt=user_utt, apiname='Dialogue', mode='srtr')
                     sys_context = docomo_res['context']
                     
                     cur = conn.cursor()
