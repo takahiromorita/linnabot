@@ -118,15 +118,15 @@ class CallbackResource(object):
                                 'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
                             #r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
-                            r2 = requests.post(DOCOMO_REFRESH_TOKEN, data=payload, headers=header)
-                            logger.debug('dialogue_testttt: {}'.format(r2.text))
+                            r = requests.post(DOCOMO_REFRESH_TOKEN, data=payload, headers=header)
+                            logger.debug('dialogue_testttt: {}'.format(r.text))
                             accesstoken = json.loads(r.text)['access_token']
                             refreshtoken = json.loads(r.text)['refresh_token']
                             cur = conn.cursor()
                             cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
                             header = {
                                 'Content-Type': 'application/json; charset=UTF-8',
-                                'Authorization': 'Basic {}'.format(accesstoken)
+                                'Authorization': 'Bearer {}'.format(accesstoken)
                             }
                             content = {
                                 'utt': event['message']['text'],
