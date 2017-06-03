@@ -113,11 +113,11 @@ class CallbackResource(object):
                             params={'grant_type':'refresh_token','refresh_token':'oYDeGLZu71N5HbGkFGC8LdXqj7Z6txMXYJ8EyThgK9NZ'}
                             logger.debug('dialogue_t')
                             header = {
-                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                'Content-Type': 'application/x-www-form-urlencoded',
                                 'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
-                            r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
-                            logger.debug('dialogue_test: {}'.format(r.status_code))
+                            r2 = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
+                            logger.debug('dialogue_test: {}'.format(r2.status_code))
                             accesstoken = json.loads(r.text)['access_token']
                             refreshtoken = json.loads(r.text)['refresh_token']
                             cur = conn.cursor()
