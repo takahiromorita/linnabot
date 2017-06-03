@@ -72,7 +72,9 @@ class CallbackResource(object):
                     if event['message']['text'].find('?') > -1:
                         #logger.debug('test_content0: {}'.format(event['message']['text'].decode('utf-8').encode('utf-8')))
                         #logger.debug('test_content: {}'.format(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text'].encode('utf-8')))
-                        docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
+                        params={'q':'次期アメリカ大統領は？', 'APIKEY':DOCOMO_API_KEY}
+                        docomo_res = requests.get(DOCOMO_QA_ENDPOINT, params=params)
+                        #docomo_res = requests.get(DOCOMO_QA_ENDPOINT+'?q='+event['message']['text']+'&APIKEY='+DOCOMO_API_KEY)
                     else:
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
