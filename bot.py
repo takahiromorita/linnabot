@@ -102,6 +102,7 @@ class CallbackResource(object):
                             'utt': event['message']['text'],
                             'context': '{}'.format(cur.fetchone()[1])
                         }
+                        logger.debug('dialogue_test')
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=content, headers=header)
                         logger.debug('dialogue_test: {}'.format(r))
                         docomo_res = json.loads(r.text)
