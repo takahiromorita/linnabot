@@ -23,6 +23,7 @@ logger.addHandler(handler)
 
 REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
 DOCOMO_DL_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/dialogue/v2/dialogue'
+DOCOMO_REFRESH_TOKEN = 'https://api.smt.docomo.ne.jp/cgi12/token'
 DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask'
 DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139')
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsdQtIQR6+UTVPKZfZF/fF4Yna1wpBnjyyUbYCgcY9sqgQf27nNDF9RVlsllCChQ7ZGwTcKz2EN4Tkyt0KAkBHJ658xzmeFg4nreiPwtFrFIL19g4+ZDskA570n9gIVOH6fenXTnyFKPdvMy9gdB04t89/1O/w1cDnyilFU=')
@@ -105,7 +106,26 @@ class CallbackResource(object):
                         }
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
                         logger.debug('dialogue_test: {}'.format(r.status_code))
-                        
+                        if r.status_code == 403:
+                            params={'grant_type': 'refresh_token', 'refresh_token': cur.fetchone()[2]}
+                            header = {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                'Authorization': 'Bearer aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
+                            }
+                            r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
+                            accesstoken = json.loads(r.text)['access_token']
+                            refreshtoken = json.loads(r.text)['refresh_token']
+                            cur = conn.cursor()
+                            cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
+                            header = {
+                                'Content-Type': 'application/json; charset=UTF-8',
+                                'Authorization': 'Bearer {}'.format(accesstoken)
+                            }
+                            content = {
+                                'utt': event['message']['text'],
+                                'context': ''
+                            }
+                            r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
                         docomo_res = json.loads(r.text)
                         #docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
                         sys_context = docomo_res['context']
