@@ -118,7 +118,7 @@ class CallbackResource(object):
                             }
                             #r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
                             r2 = requests.post(DOCOMO_REFRESH_TOKEN, headers=header)
-                            logger.debug('dialogue_test: {}'.format(r2.status_code))
+                            logger.debug('dialogue_testttt: {}'.format(r2))
                             accesstoken = json.loads(r.text)['access_token']
                             refreshtoken = json.loads(r.text)['refresh_token']
                             cur = conn.cursor()
