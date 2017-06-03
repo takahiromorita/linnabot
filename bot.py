@@ -110,12 +110,12 @@ class CallbackResource(object):
                             cur = conn.cursor()
                             cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
                             params={'grant_type': 'refresh_token', 'refresh_token': '{}'.format(cur.fetchone()[2])}
-                            logger.debug('dialogue_test: {}'.format(r.status_code))
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                                 'Authorization': 'Bearer aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
                             r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
+                            logger.debug('dialogue_test: {}'.format(r.status_code))
                             accesstoken = json.loads(r.text)['access_token']
                             refreshtoken = json.loads(r.text)['refresh_token']
                             cur = conn.cursor()
