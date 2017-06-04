@@ -110,14 +110,12 @@ class CallbackResource(object):
                             cur = conn.cursor()
                             cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
                             logger.debug('dialogue_test: {}'.format(cur.fetchone()[2]))
-                            #params={'grant_type':'refresh_token','refresh_token':'oYDeGLZu71N5HbGkFGC8LdXqj7Z6txMXYJ8EyThgK9NZ'}
                             payload = 'grant_type=refresh_token&refresh_token={}'.format(cur.fetchone()[2])
                             logger.debug('dialogue_t')
                             header = {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                                 'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
                             }
-                            #r = requests.post(DOCOMO_REFRESH_TOKEN, params=params, headers=header)
                             r = requests.post(DOCOMO_REFRESH_TOKEN, data=payload, headers=header)
                             logger.debug('dialogue_testttt: {}'.format(r.text))
                             docomo_res = json.loads(r.text)
@@ -136,13 +134,35 @@ class CallbackResource(object):
                                 'context': ''
                             }
                             r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
-                        docomo_res = json.loads(r.text)
-                        #docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
-                        sys_context = docomo_res['context']
-                        sys_utt = docomo_res['utt']
-                        cur = conn.cursor()
-                        cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
-                        conn.commit()
+                            docomo_res = json.loads(r.text)
+                            sys_context = docomo_res['context']
+                            sys_utt = docomo_res['utt']
+                            cur = conn.cursor()
+                            cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
+                            conn.commit()
+                        elif r.status_code == 200:
+                            docomo_res = json.loads(r.text)
+                            #docomo_res = self.docomo_client.send(utt=user_utt, apiname='Dialogue', mode='dialog', context='{}'.format(cur.fetchone()[1]))
+                            sys_context = docomo_res['context']
+                            sys_utt = docomo_res['utt']
+                            cur = conn.cursor()
+                            cur.execute("INSERT INTO contexttb (context, date) VALUES (%s, %s)",[sys_context,timestamp])
+                            conn.commit()
+                            cur = conn.cursor()
+                            
+                            cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
+                            payload = 'grant_type=refresh_token&refresh_token={}'.format(cur.fetchone()[2])
+                            header = {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Authorization': 'Basic aG01WTJrcHcwYlkxRU1oWHBDTVhwZzNIYXd2VFhSUnlYUjV5ZjVlT1lvc1A6UVNGO19ibnxEWEMxMzJkSXpyIjQ='
+                            }
+                            r = requests.post(DOCOMO_REFRESH_TOKEN, data=payload, headers=header)
+                            docomo_res = json.loads(r.text)
+                            accesstoken = docomo_res['access_token']
+                            refreshtoken = docomo_res['refresh_token']
+                            cur = conn.cursor()
+                            cur.execute("INSERT INTO tokentb (accesstoken, refreshtoken) VALUES (%s, %s)",[accesstoken,refreshtoken])
+                            conn.commit()
                     
                     cur.close()
                     conn.close()
