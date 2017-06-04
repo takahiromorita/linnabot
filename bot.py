@@ -106,7 +106,7 @@ class CallbackResource(object):
                         }
                         r = requests.post(DOCOMO_DL_ENDPOINT, params=params, data=json.dumps(content), headers=header)
                         logger.debug('dialogue_test: {}'.format(r.status_code))
-                        if r.status_code == 403:
+                        if r.status_code == 403 and event['message']['text'].find('森田代理') > -1:
                             cur = conn.cursor()
                             cur.execute("SELECT * FROM tokentb ORDER BY id DESC LIMIT 1")
                             #logger.debug('dialogue_testtt: {}'.format(cur.fetchone()[2]))
