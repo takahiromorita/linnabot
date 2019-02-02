@@ -75,6 +75,7 @@ class CallbackResource(object):
                     
                     if event['message']['text'].find('教えて') > -1:
                         params={'q':event['message']['text'], 'APIKEY':DOCOMO_API_KEY}
+                        logger.debug('test_test')
                         r = requests.get(DOCOMO_QA_ENDPOINT, params=params)
                         docomo_res = json.loads(r.text)
                         sys_utt = docomo_res['answers'][0]['answerText']
