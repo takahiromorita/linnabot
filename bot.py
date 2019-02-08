@@ -21,13 +21,21 @@ handler.setLevel(DEBUG)
 logger.setLevel(DEBUG)
 logger.addHandler(handler)
 
+DOCOMO_API_KEY = '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139'
+
 REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
 # DOCOMO_DL_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/dialogue/v2/dialogue'
 DOCOMO_DL_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/naturalChatting/v1/dialogue'
 DOCOMO_REFRESH_TOKEN = 'https://api.smt.docomo.ne.jp/cgi12/token'
+
 # DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/knowledgeQA/v1/ask'
-DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/naturalKnowledge/v1/dialogue'
-DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139')
+DOCOMO_QA_USERRESIST_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/naturalKnowledge/v1/registration?APIKEY=REGISTAR_KEY'
+DOCOMO_QA_ENDPOINT = 'https://api.apigw.smt.docomo.ne.jp/naturalKnowledge/v1/dialogue?APIKEY=REGISTAR_KEY'
+DOCOMO_QA_USERRESIST_ENDPOINT = DOCOMO_QA_USERRESIST_ENDPOINT.replace('REGISTAR_KEY',DOCOMO_API_KEY)
+DOCOMO_QA_ENDPOINT = DOCOMO_QA_ENDPOINT.replace('REGISTAR_KEY',DOCOMO_API_KEY)
+
+
+#DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '507146495762386f546830682e65707967736c744647394e436f4b5a63706650304e476649352e47613139')
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsdQtIQR6+UTVPKZfZF/fF4Yna1wpBnjyyUbYCgcY9sqgQf27nNDF9RVlsllCChQ7ZGwTcKz2EN4Tkyt0KAkBHJ658xzmeFg4nreiPwtFrFIL19g4+ZDskA570n9gIVOH6fenXTnyFKPdvMy9gdB04t89/1O/w1cDnyilFU=')
 
 
@@ -74,11 +82,24 @@ class CallbackResource(object):
                     )
                     
                     if event['message']['text'].find('教えて') > -1:
-                        params={'q':event['message']['text'], 'APIKEY':DOCOMO_API_KEY}
+                        headers = {'Content-Type': 'application/json'}
+                        
+                        payload1 = {"botId": "Knowledge","appKind": "line-chatbot"}
+                        r1 = requests.post(DOCOMO_QA_USERRESIST_ENDPOINT, data=json.dumps(payload1), headers=headers)
+                        data1 = r1.json()
+                        
+                        payload2 = {"language":"ja-JP","botId":"Knowledge","appId":data1['appId'],"voiceText":event['message']['text'],"appRecvTime":timestamp,"appSendTime":timestamp}
+                        r2 = requests.post(DOCOMO_QA_ENDPOINT, data=json.dumps(payload2), headers=headers)
+                        data2 = r2.json()
+                        
+                        #params={'q':event['message']['text'], 'APIKEY':DOCOMO_API_KEY}
+
                         logger.debug('test_test')
-                        r = requests.get(DOCOMO_QA_ENDPOINT, params=params)
-                        docomo_res = json.loads(r.text)
-                        sys_utt = docomo_res['answers'][0]['answerText']
+                        #r = requests.get(DOCOMO_QA_ENDPOINT, params=params)
+                        #docomo_res = json.loads(r.text)
+                        #sys_utt = docomo_res['answers'][0]['answerText']
+                        sys_utt = data2['systemText']['expression']
+                        
                         logger.debug('test_aaaaa: {}'.format(sys_utt))
                         cur = conn.cursor()
                         cur.execute("SELECT * FROM contexttb ORDER BY id DESC LIMIT 1")
@@ -175,7 +196,8 @@ class CallbackResource(object):
                                            'Docomo API Error. ',
                                            'Could not invoke docomo api.')
 
-                logger.debug('docomo_res: {}'.format(docomo_res))
+                #logger.debug('docomo_res: {}'.format(docomo_res))
+                logger.debug('docomo_res: {}'.format(data2))
                 #sys_utt = docomo_res['utt']
 
                 send_content = {
