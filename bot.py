@@ -48,32 +48,29 @@ class CallbackResource(object):
 
             logger.debug('event: {}'.format(event))
 
-            if event['type'] == 'message':
-                try:                    
-                    if event['message']['text'].find('@') > -1:
+            if event['type'] == 'message':              
+                if event['message']['text'].find('@') > -1:
+                    try:
                         response = a3rtclient.talk(event['message']['text'])
-                        #data2 = r2.json()
-                        logger.debug(response['results'][0]['reply'])
-                        sys_utt = response['results'][0]['reply']                       
-                        logger.debug('A3RT_res: {}'.format(sys_utt))
-                        send_content = {
-                            'replyToken': event['replyToken'],
-                            'messages': [
-                                {
-                                    'type': 'text',
-                                    'text': sys_utt
-                                }
-                            ]
-                        }
-                        send_content = json.dumps(send_content)
-                        logger.debug('send_content: {}'.format(send_content))
-                        res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
-                        logger.debug('res: {} {}'.format(res.status_code, res.reason))
-                        #resp.body = json.dumps('OK')
-                except Exception:
-                    raise falcon.HTTPError(falcon.HTTP_503,
-                                           'A3RT API Error. ',
-                                           'Could not invoke A3RT api.')
+                    except Exception:
+                        raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
+                    logger.debug(response['results'][0]['reply'])
+                    sys_utt = response['results'][0]['reply']                       
+                    logger.debug('A3RT_res: {}'.format(sys_utt))
+                    send_content = {
+                        'replyToken': event['replyToken'],
+                        'messages': [
+                            {
+                                'type': 'text',
+                                'text': sys_utt
+                            }
+                        ]
+                    }
+                    send_content = json.dumps(send_content)
+                    logger.debug('send_content: {}'.format(send_content))
+                    res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
+                    logger.debug('res: {} {}'.format(res.status_code, res.reason))
+                    resp.body = json.dumps('OK')
 
 api = falcon.API()
 api.add_route('/callback', CallbackResource())
