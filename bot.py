@@ -42,14 +42,14 @@ class CallbackResource(object):
         for event in receive_params['events']:
             logger.debug('event: {}'.format(event))
             if event['type'] == 'message':
-                #if event['message']['text'].find('@') > -1:
+                if not event['message']['text'].find('@') > -1:
                     try:
-                        response = a3rtclient.talk(event['message']['text'])
+                        response = a3rtclient.talk(event['message']['text'].replace('\\',''))
                     except Exception:
                         logger.debug('A3RT API Error. Could not invoke A3RT api.')
                         #raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
                     logger.debug(response['results'][0]['reply'])
-                    sys_utt = response['results'][0]['reply'].replace('\\','')
+                    sys_utt = response['results'][0]['reply']
                     logger.debug('A3RT_res: {}'.format(sys_utt))
                     send_content = {
                         'replyToken': event['replyToken'],
