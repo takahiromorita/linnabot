@@ -69,9 +69,7 @@ class CallbackResource(object):
                         logger.debug('send_content: {}'.format(send_content))
                         res = requests.post(REPLY_ENDPOINT, data=send_content, headers=self.header)
                         logger.debug('res: {} {}'.format(res.status_code, res.reason))
-                        resp.body = json.dumps('OK')
-                    else:
-
+                        #resp.body = json.dumps('OK')
                 except Exception:
                     raise falcon.HTTPError(falcon.HTTP_503,
                                            'A3RT API Error. ',
