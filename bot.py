@@ -49,7 +49,7 @@ class CallbackResource(object):
                         logger.debug('A3RT API Error. Could not invoke A3RT api.')
                         #raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
                     logger.debug(response['results'][0]['reply'])
-                    sys_utt = response['results'][0]['reply']                       
+                    sys_utt = response['results'][0]['reply'].replace('\\','')
                     logger.debug('A3RT_res: {}'.format(sys_utt))
                     send_content = {
                         'replyToken': event['replyToken'],
