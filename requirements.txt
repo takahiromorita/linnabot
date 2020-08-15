@@ -9,3 +9,4 @@ requests==2.9.1
 simplejson==3.8.2
 six==1.10.0
 psycopg2==2.7.1
+pya3rt
