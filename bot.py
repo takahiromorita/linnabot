@@ -24,6 +24,7 @@ logger.addHandler(handler)
 
 REPLY_ENDPOINT = 'https://api.line.me/v2/bot/message/reply'
 A3RT_API_KEY = 'DZZDe9fEhdOO1qNJcEsS99brUOtUeS64'
+a3rtclient = pya3rt.TalkClient(A3RT_API_KEY)
 LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN', 'yh0SCsdQtIQR6+UTVPKZfZF/fF4Yna1wpBnjyyUbYCgcY9sqgQf27nNDF9RVlsllCChQ7ZGwTcKz2EN4Tkyt0KAkBHJ658xzmeFg4nreiPwtFrFIL19g4+ZDskA570n9gIVOH6fenXTnyFKPdvMy9gdB04t89/1O/w1cDnyilFU=')
 
 
@@ -54,8 +55,8 @@ class CallbackResource(object):
                     try:
                         response = a3rtclient.talk(event['message']['text'])
                     except Exception:
-                        logger.debug('eventtestjijij')
-                        raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
+                        logger.debug('A3RT API Error. Could not invoke A3RT api.')
+                        #raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
                     logger.debug(response['results'][0]['reply'])
                     sys_utt = response['results'][0]['reply']                       
                     logger.debug('A3RT_res: {}'.format(sys_utt))
