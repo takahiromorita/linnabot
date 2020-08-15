@@ -54,6 +54,7 @@ class CallbackResource(object):
                     try:
                         response = a3rtclient.talk(event['message']['text'])
                     except Exception:
+                        logger.debug('eventtestjijij')
                         raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
                     logger.debug(response['results'][0]['reply'])
                     sys_utt = response['results'][0]['reply']                       
