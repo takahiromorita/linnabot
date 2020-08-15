@@ -1,18 +1,13 @@
 import json
 import os
 import sys
-from logging import DEBUG, StreamHandler, getLogger
-
 import requests
-
 import pya3rt
 import falcon
-
-import psycopg2
-#import urlparse
-import urllib
 import time
 import datetime
+from logging import DEBUG, StreamHandler, getLogger
+
 
 # logger
 logger = getLogger(__name__)
@@ -39,19 +34,15 @@ class CallbackResource(object):
 
         body = req.stream.read()
         if not body:
-            raise falcon.HTTPBadRequest('Empty request body',
-                                        'A valid JSON document is required.')
+            raise falcon.HTTPBadRequest('Empty request body','A valid JSON document is required.')
 
         receive_params = json.loads(body.decode('utf-8'))
         logger.debug('receive_params: {}'.format(receive_params))
 
         for event in receive_params['events']:
-
             logger.debug('event: {}'.format(event))
-
             if event['type'] == 'message':
                 #if event['message']['text'].find('@') > -1:
-                    logger.debug('eventtest')
                     try:
                         response = a3rtclient.talk(event['message']['text'])
                     except Exception:
