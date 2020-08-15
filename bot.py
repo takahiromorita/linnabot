@@ -49,8 +49,8 @@ class CallbackResource(object):
             logger.debug('event: {}'.format(event))
 
             if event['type'] == 'message':
-                logger.debug('eventtest')
                 #if event['message']['text'].find('@') > -1:
+                    logger.debug('eventtest')
                     try:
                         response = a3rtclient.talk(event['message']['text'])
                     except Exception:
