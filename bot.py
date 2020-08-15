@@ -45,6 +45,7 @@ class CallbackResource(object):
                 if not event['message']['text'].find('@') > -1:
                     try:
                         response = a3rtclient.talk(event['message']['text'].replace('\\',''))
+                        #response = a3rtclient.talk(event['message']['text'])
                     except Exception:
                         logger.debug('A3RT API Error. Could not invoke A3RT api.')
                         #raise falcon.HTTPError(falcon.HTTP_503,'A3RT API Error. ','Could not invoke A3RT api.')
